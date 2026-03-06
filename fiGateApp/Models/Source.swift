@@ -8,11 +8,11 @@ public enum SourceKind: String, CaseIterable, Codable, Sendable {
     public var displayName: String {
         switch self {
         case .phoneNumber:
-            return "Phone Number"
+            return "Phone Number / 電話號碼"
         case .email:
-            return "Email"
+            return "Email / 電子郵件"
         case .appleID:
-            return "Apple ID"
+            return "Apple ID / Apple ID"
         }
     }
 }

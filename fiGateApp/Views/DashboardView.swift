@@ -13,7 +13,7 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Dashboard")
+                Text("Dashboard / 儀表板")
                     .font(.largeTitle)
                     .fontWeight(.semibold)
 
@@ -23,25 +23,25 @@ struct DashboardView: View {
                 )
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 16)], spacing: 16) {
-                    DashboardCard(title: "Gateway Status", value: configManager.gatewayStatusText)
-                    DashboardCard(title: "App Mode", value: backgroundAgentManager.statusText)
-                    DashboardCard(title: "Polling Interval", value: configManager.config.pollInterval.displayName)
-                    DashboardCard(title: "External Endpoint", value: configManager.config.openClawEndpoint)
+                    DashboardCard(title: "Gateway Status / 閘道狀態", value: configManager.gatewayStatusText)
+                    DashboardCard(title: "App Mode / 應用模式", value: backgroundAgentManager.statusText)
+                    DashboardCard(title: "Polling Interval / 輪詢間隔", value: configManager.config.pollInterval.displayName)
+                    DashboardCard(title: "OpenClaw Endpoint / OpenClaw 端點", value: configManager.config.openClawEndpoint)
                     StatusDashboardCard(
-                        title: "Gateway Runtime",
+                        title: "Gateway Runtime / 閘道執行狀態",
                         isHealthy: backgroundAgentManager.isRunningNormally,
                         healthyText: backgroundAgentManager.gatewayRuntimeStatusText,
                         unhealthyText: backgroundAgentManager.gatewayRuntimeStatusText
                     )
                     StatusDashboardCard(
-                        title: "chat.db Access",
+                        title: "chat.db Access / chat.db 權限",
                         isHealthy: model.isChatDatabaseReadable,
                         healthyText: model.databaseAccessText,
                         unhealthyText: model.databaseAccessText
                     )
                 }
 
-                GroupBox("Resident Runtime") {
+                GroupBox("Resident Runtime / 常駐執行") {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(backgroundAgentManager.detailText)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -52,13 +52,13 @@ struct DashboardView: View {
                             .textSelection(.enabled)
 
                         HStack {
-                            Button("Refresh Runtime") {
+                            Button("Refresh Runtime / 重新整理執行狀態") {
                                 Task {
                                     await backgroundAgentManager.refreshStatus()
                                 }
                             }
 
-                            Button("Restart Gateway") {
+                            Button("Restart Gateway / 重新啟動閘道") {
                                 Task {
                                     await backgroundAgentManager.restartGateway()
                                 }
@@ -68,36 +68,36 @@ struct DashboardView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                GroupBox("Permissions") {
+                GroupBox("Permissions / 權限") {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("fiGate.app needs Full Disk Access to read the local Messages database. Once granted, keep fiGate running to maintain the resident gateway.")
+                        Text("fiGate.app needs Full Disk Access to read the local Apple Messages database for iMessage gateway, OpenClaw integration, and Telegram Bot alternative workflows. Once granted, keep fiGate running to maintain the resident gateway. / fiGate.app 需要 Full Disk Access 才能讀取本地 Apple Messages 資料庫，以支援 iMessage gateway、OpenClaw 整合與 Telegram Bot 替代工作流。完成授權後，請保持 fiGate 常駐運行。")
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         HStack {
-                            Button("Open Full Disk Access Settings") {
+                            Button("Open Full Disk Access Settings / 開啟 Full Disk Access 設定") {
                                 if SystemSettingsNavigator.openFullDiskAccessSettings() {
                                     permissionActionStatus = nil
                                 } else {
-                                    permissionActionStatus = "Unable to open System Settings automatically. Open Privacy & Security > Full Disk Access manually."
+                                    permissionActionStatus = "Unable to open System Settings automatically. Open Privacy & Security > Full Disk Access manually. / 無法自動開啟系統設定，請手動前往 Privacy & Security > Full Disk Access。"
                                 }
                             }
 
-                            Button("Copy fiGate.app Path") {
+                            Button("Copy fiGate.app Path / 複製 fiGate.app 路徑") {
                                 if SystemSettingsNavigator.copyFiGateAppPathToPasteboard() {
-                                    permissionActionStatus = "fiGate.app path copied."
+                                    permissionActionStatus = "fiGate.app path copied. / fiGate.app 路徑已複製。"
                                 } else {
-                                    permissionActionStatus = "Unable to copy fiGate.app path."
+                                    permissionActionStatus = "Unable to copy fiGate.app path. / 無法複製 fiGate.app 路徑。"
                                 }
                             }
 
-                            Button(model.isRunningDiagnostic ? "Checking…" : "Run Database Access Check") {
+                            Button(model.isRunningDiagnostic ? "Checking… / 檢查中…" : "Run Database Access Check / 執行資料庫權限檢查") {
                                 Task {
                                     await model.runDatabaseAccessCheck()
                                 }
                             }
                             .disabled(model.isRunningDiagnostic)
 
-                            Button("Open Setup Guide") {
+                            Button("Open Setup Guide / 開啟設定引導") {
                                 hasSeenPermissionSetup = false
                                 isShowingPermissionSetup = true
                             }
@@ -113,23 +113,23 @@ struct DashboardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Latest Activity")
+                    Text("Latest Activity / 最新活動")
                         .font(.title2)
                         .fontWeight(.medium)
 
-                    GroupBox("Last Message Received") {
+                    GroupBox("Last Message Received / 最後收到的訊息") {
                         Text(model.lastMessageReceived)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
                     }
 
-                    GroupBox("Last Action Executed") {
+                    GroupBox("Last Action Executed / 最後執行動作") {
                         Text(model.lastActionExecuted)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
                     }
 
-                    GroupBox("Last Error") {
+                    GroupBox("Last Error / 最後錯誤") {
                         Text(model.lastErrorRecorded)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
@@ -137,11 +137,11 @@ struct DashboardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Recent Database Messages")
+                    Text("Recent Database Messages / 最近資料庫訊息")
                         .font(.title2)
                         .fontWeight(.medium)
 
-                    Text("This list is read directly by fiGate.app. In the single-app architecture, this is the same process that handles polling and auto-replies.")
+                    Text("This list is read directly by fiGate.app. In the single-app architecture, the same process handles Apple Messages polling, OpenClaw relay, iMessage auto-replies, and Telegram Bot alternative workflows. / 這個列表由 fiGate.app 直接讀取。在單一 app 架構下，同一個程序會同時處理 Apple Messages 輪詢、OpenClaw relay、iMessage 自動回覆，以及 Telegram Bot 替代工作流。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -153,7 +153,7 @@ struct DashboardView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .textSelection(.enabled)
                         } else if model.recentMessages.isEmpty {
-                            Text("No recent text messages were read from chat.db.")
+                            Text("No recent text messages were read from chat.db. / 尚未從 chat.db 讀到最近文字訊息。")
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         } else {
                             VStack(alignment: .leading, spacing: 10) {
@@ -207,7 +207,7 @@ private struct PermissionStatusBanner: View {
                 .foregroundStyle(isAccessible ? .green : .orange)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(isAccessible ? "Full Disk Access Active" : "Full Disk Access Required")
+                Text(isAccessible ? "Full Disk Access Active / 已取得 Full Disk Access" : "Full Disk Access Required / 需要 Full Disk Access")
                     .font(.headline)
 
                 Text(detailText)
@@ -287,7 +287,7 @@ private struct DatabaseMessageRow: View {
 
     private var senderLabel: String {
         let trimmedSender = message.sender.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmedSender.isEmpty ? "No handle.id" : trimmedSender
+        return trimmedSender.isEmpty ? "No handle.id / 無 handle.id" : trimmedSender
     }
 
     private var directionLabel: String {
@@ -295,7 +295,7 @@ private struct DatabaseMessageRow: View {
             return "fiGate"
         }
 
-        return message.isFromMe ? "From Me" : "Incoming"
+        return message.isFromMe ? "From Me / 我發送的" : "Incoming / 收到"
     }
 
     private var directionColor: Color {
@@ -335,9 +335,9 @@ private struct DatabaseMessageRow: View {
 
 @MainActor
 private final class DashboardModel: ObservableObject {
-    @Published var lastMessageReceived = "No messages received yet."
-    @Published var lastActionExecuted = "No actions recorded yet."
-    @Published var lastErrorRecorded = "No errors recorded yet."
+    @Published var lastMessageReceived = "No messages received yet. / 尚未收到訊息。"
+    @Published var lastActionExecuted = "No actions recorded yet. / 尚無動作紀錄。"
+    @Published var lastErrorRecorded = "No errors recorded yet. / 尚無錯誤紀錄。"
     @Published var recentMessages: [MessageEvent] = []
     @Published var databaseReadError: String?
     @Published var appDatabaseDiagnostic: DatabaseAccessDiagnostic?
@@ -352,7 +352,7 @@ private final class DashboardModel: ObservableObject {
     }
 
     var databaseAccessText: String {
-        appDatabaseDiagnostic?.isAccessible == true ? "Readable in fiGate.app" : "Unavailable in fiGate.app"
+        appDatabaseDiagnostic?.isAccessible == true ? "Readable in fiGate.app / fiGate.app 可讀取" : "Unavailable in fiGate.app / fiGate.app 不可讀取"
     }
 
     var permissionBannerText: String {
@@ -360,7 +360,7 @@ private final class DashboardModel: ObservableObject {
             return appDatabaseDiagnostic.detail
         }
 
-        return "fiGate has not checked Messages database access yet."
+        return "fiGate has not checked Apple Messages database access yet. / fiGate 尚未檢查 Apple Messages 資料庫權限。"
     }
 
     func start() {
@@ -384,8 +384,8 @@ private final class DashboardModel: ObservableObject {
     }
 
     func refresh() async {
-        lastMessageReceived = await Logger.shared.lastLine(channel: .message) ?? "No messages received yet."
-        lastActionExecuted = await Logger.shared.lastLine(channel: .gateway) ?? "No actions recorded yet."
+        lastMessageReceived = await Logger.shared.lastLine(channel: .message) ?? "No messages received yet. / 尚未收到訊息。"
+        lastActionExecuted = await Logger.shared.lastLine(channel: .gateway) ?? "No actions recorded yet. / 尚無動作紀錄。"
 
         do {
             let config = try await configStore.load()
@@ -396,7 +396,7 @@ private final class DashboardModel: ObservableObject {
                 subject: .fiGateApp,
                 status: .accessible,
                 databasePath: ConfigPaths.expandedPath(config.chatDatabasePath),
-                detail: "fiGate.app can read the Messages database.",
+                detail: "fiGate.app can read the Apple Messages database. / fiGate.app 可讀取 Apple Messages 資料庫。",
                 recentTextMessageCount: recentMessages.count
             )
         } catch {
@@ -411,7 +411,7 @@ private final class DashboardModel: ObservableObject {
         } else if let databaseReadError, !databaseReadError.isEmpty {
             lastErrorRecorded = databaseReadError
         } else {
-            lastErrorRecorded = "No errors recorded yet."
+            lastErrorRecorded = "No errors recorded yet. / 尚無錯誤紀錄。"
         }
     }
 
@@ -431,7 +431,7 @@ private final class DashboardModel: ObservableObject {
             appDatabaseDiagnostic = .failed(
                 subject: .fiGateApp,
                 databasePath: ConfigPaths.expandedPath(Config.defaultChatDatabasePath),
-                detail: "Unable to load fiGate configuration before running the app diagnostic: \(error.localizedDescription)"
+                detail: "Unable to load fiGate configuration before running the app diagnostic: \(error.localizedDescription) / 執行 app 診斷前無法載入 fiGate 設定：\(error.localizedDescription)"
             )
         }
     }

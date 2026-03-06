@@ -12,7 +12,14 @@ public enum LogChannel: String, CaseIterable, Identifiable, Sendable {
     }
 
     public var displayName: String {
-        rawValue.capitalized
+        switch self {
+        case .gateway:
+            return "Gateway / 閘道"
+        case .message:
+            return "Message / 訊息"
+        case .error:
+            return "Error / 錯誤"
+        }
     }
 }
 

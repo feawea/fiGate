@@ -13,17 +13,17 @@ public enum PollInterval: Int, CaseIterable, Codable, Identifiable, Sendable {
     public var displayName: String {
         switch self {
         case .seconds15:
-            return "15 seconds"
+            return "15 seconds / 15 秒"
         case .seconds30:
-            return "30 seconds"
+            return "30 seconds / 30 秒"
         case .minute1:
-            return "1 minute"
+            return "1 minute / 1 分鐘"
         case .minutes5:
-            return "5 minutes"
+            return "5 minutes / 5 分鐘"
         case .minutes10:
-            return "10 minutes"
+            return "10 minutes / 10 分鐘"
         case .minutes30:
-            return "30 minutes"
+            return "30 minutes / 30 分鐘"
         }
     }
 

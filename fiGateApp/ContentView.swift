@@ -13,15 +13,15 @@ private enum AppSection: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .dashboard:
-            return "Dashboard"
+            return "Dashboard / 儀表板"
         case .sources:
-            return "Sources"
+            return "Sources / 來源"
         case .gatewaySettings:
-            return "Gateway Settings"
+            return "Gateway Settings / 閘道設定"
         case .openClawSettings:
-            return "External System"
+            return "OpenClaw / External System / 外部系統"
         case .logs:
-            return "Logs"
+            return "Logs / 日誌"
         }
     }
 

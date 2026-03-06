@@ -9,24 +9,24 @@ struct OpenClawSettingsView: View {
 
     var body: some View {
         Form {
-            Section("External System") {
-                TextField("Webhook Endpoint", text: $configManager.config.openClawEndpoint)
-                SecureField("Access Token", text: $configManager.config.openClawToken)
-                Text("fiGate is the gateway layer. OpenClaw is the default webhook adapter, but the endpoint is user-configurable.")
+            Section("OpenClaw / External System / 外部系統") {
+                TextField("Webhook Endpoint / Webhook 端點", text: $configManager.config.openClawEndpoint)
+                SecureField("Access Token / 存取權杖", text: $configManager.config.openClawToken)
+                Text("fiGate is a macOS iMessage gateway for OpenClaw, Apple Messages automation, and Telegram Bot alternative workflows. OpenClaw is the default webhook adapter, and the endpoint remains user-configurable. / fiGate 是一個用於 OpenClaw、Apple Messages automation 與 Telegram Bot 替代工作流的 macOS iMessage gateway。OpenClaw 是預設 webhook adapter，但端點可由使用者自行設定。")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
 
             Section {
                 HStack {
-                    Button("Save Settings") {
+                    Button("Save Settings / 儲存設定") {
                         Task {
                             let saved = await configManager.save()
-                            saveMessage = saved ? "External system settings saved." : "Failed to save external system settings."
+                            saveMessage = saved ? "External system settings saved. / 外部系統設定已儲存。" : "Failed to save external system settings. / 外部系統設定儲存失敗。"
                         }
                     }
 
-                    Button(isTesting ? "Testing..." : "Test Connection") {
+                    Button(isTesting ? "Testing... / 測試中..." : "Test Connection / 測試連線") {
                         Task {
                             await testConnection()
                         }
@@ -47,7 +47,7 @@ struct OpenClawSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .navigationTitle("External System")
+        .navigationTitle("OpenClaw / External System / 外部系統")
     }
 
     @MainActor
@@ -55,7 +55,7 @@ struct OpenClawSettingsView: View {
         let trimmedEndpoint = configManager.config.openClawEndpoint.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard let endpointURL = URL(string: trimmedEndpoint) else {
-            testMessage = "Failed: invalid external system endpoint."
+            testMessage = "Failed: invalid external system endpoint. / 錯誤：外部系統端點無效。"
             return
         }
 
@@ -70,12 +70,12 @@ struct OpenClawSettingsView: View {
 
             let reply = response.replyText.trimmingCharacters(in: .whitespacesAndNewlines)
             if reply.isEmpty {
-                testMessage = "Connected successfully. External system returned HTTP \(response.statusCode)."
+                testMessage = "Connected successfully. External system returned HTTP \(response.statusCode). / 連線成功，外部系統回傳 HTTP \(response.statusCode)。"
             } else {
-                testMessage = "Connected successfully. Reply: \(reply)"
+                testMessage = "Connected successfully. Reply: \(reply) / 連線成功，回覆：\(reply)"
             }
         } catch {
-            testMessage = "Failed: \(error.localizedDescription)"
+            testMessage = "Failed: \(error.localizedDescription) / 連線失敗：\(error.localizedDescription)"
         }
     }
 }

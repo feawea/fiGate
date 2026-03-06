@@ -25,7 +25,7 @@ struct ResidentMenuBarView: View {
                     .font(.subheadline)
             }
 
-            Text("Polling: \(configManager.config.pollInterval.displayName)")
+            Text("Polling / 輪詢: \(configManager.config.pollInterval.displayName)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -35,18 +35,18 @@ struct ResidentMenuBarView: View {
 
             Divider()
 
-            Button("Open Dashboard") {
+            Button("Open Dashboard / 開啟儀表板") {
                 NSApp.activate(ignoringOtherApps: true)
                 openWindow(id: "dashboard")
             }
 
-            Button("Refresh Runtime") {
+            Button("Refresh Runtime / 重新整理執行狀態") {
                 Task {
                     await backgroundAgentManager.refreshStatus()
                 }
             }
 
-            Button("Restart Gateway") {
+            Button("Restart Gateway / 重新啟動閘道") {
                 Task {
                     await backgroundAgentManager.restartGateway()
                 }
@@ -54,7 +54,7 @@ struct ResidentMenuBarView: View {
 
             Divider()
 
-            Button("Quit fiGate") {
+            Button("Quit fiGate / 結束 fiGate") {
                 NSApp.terminate(nil)
             }
         }

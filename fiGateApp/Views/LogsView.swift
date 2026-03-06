@@ -6,11 +6,14 @@ struct LogsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Logs")
+            Text("Logs / 日誌")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
 
-            Picker("Log Channel", selection: $model.selectedChannel) {
+            Text("Review runtime activity for iMessage polling, OpenClaw relay requests, Apple Messages auto-replies, and Telegram Bot alternative workflows. / 在這裡查看 iMessage 輪詢、OpenClaw relay 請求、Apple Messages 自動回覆，以及 Telegram Bot 替代工作流的執行紀錄。")
+                .foregroundStyle(.secondary)
+
+            Picker("Log Channel / 日誌頻道", selection: $model.selectedChannel) {
                 ForEach(LogChannel.allCases) { channel in
                     Text(channel.displayName).tag(channel)
                 }
@@ -18,7 +21,7 @@ struct LogsView: View {
             .pickerStyle(.segmented)
 
             ScrollView {
-                Text(model.contents.isEmpty ? "No log entries yet." : model.contents)
+                Text(model.contents.isEmpty ? "No log entries yet. / 尚無日誌紀錄。" : model.contents)
                     .font(.system(.body, design: .monospaced))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)

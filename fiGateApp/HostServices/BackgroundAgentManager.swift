@@ -10,12 +10,12 @@ final class BackgroundAgentManager: ObservableObject {
         case stopped
     }
 
-    @Published private(set) var statusText = "Single-app resident mode"
-    @Published private(set) var detailText = "fiGate.app is the only gateway runtime. Keep the app running to continue polling Messages."
+    @Published private(set) var statusText = "Single-App Resident Mode / 單一常駐模式"
+    @Published private(set) var detailText = "fiGate.app is the only gateway runtime for iMessage, OpenClaw, and Apple Messages automation. Keep the app running to continue polling Messages. / fiGate.app 是唯一的 iMessage、OpenClaw 與 Apple Messages automation gateway runtime。請保持 app 常駐以持續輪詢 Messages。"
     @Published private(set) var lastError: String?
     @Published private(set) var gatewayRuntimeMode: GatewayRuntimeMode = .stopped
-    @Published private(set) var gatewayRuntimeStatusText = "Not Running"
-    @Published private(set) var gatewayRuntimeDetailText = "Gateway runtime has not been started yet."
+    @Published private(set) var gatewayRuntimeStatusText = "Not Running / 未運行"
+    @Published private(set) var gatewayRuntimeDetailText = "Gateway runtime has not been started yet. / Gateway runtime 尚未啟動。"
 
     private var didBootstrap = false
     private let gatewayRunner = GatewayRunner()
@@ -65,19 +65,19 @@ final class BackgroundAgentManager: ObservableObject {
     func stopGateway() async {
         guard isGatewayRunning else {
             gatewayRuntimeMode = .stopped
-            gatewayRuntimeStatusText = "Stopped"
-            gatewayRuntimeDetailText = "The resident gateway runner is not active."
+            gatewayRuntimeStatusText = "Stopped / 已停止"
+            gatewayRuntimeDetailText = "The resident gateway runner is not active. / 常駐 gateway runner 尚未啟用。"
             return
         }
 
         await gatewayRunner.stop()
         isGatewayRunning = false
         gatewayRuntimeMode = .stopped
-        gatewayRuntimeStatusText = "Stopped"
-        gatewayRuntimeDetailText = "The resident gateway runner has been stopped."
+        gatewayRuntimeStatusText = "Stopped / 已停止"
+        gatewayRuntimeDetailText = "The resident gateway runner has been stopped. / 常駐 gateway runner 已停止。"
         lastError = nil
-        statusText = "Single-app resident mode"
-        detailText = "fiGate.app is idle. Restart the gateway runner to resume polling Messages."
+        statusText = "Single-App Resident Mode / 單一常駐模式"
+        detailText = "fiGate.app is idle. Restart the gateway runner to resume iMessage polling and OpenClaw relay work. / fiGate.app 目前閒置。重新啟動 gateway runner 以恢復 iMessage 輪詢與 OpenClaw relay。"
     }
 
     private func startGatewayIfNeeded() async throws {
@@ -92,19 +92,19 @@ final class BackgroundAgentManager: ObservableObject {
 
     private func applyRunningState() {
         gatewayRuntimeMode = .residentApp
-        gatewayRuntimeStatusText = "Running in fiGate.app"
-        gatewayRuntimeDetailText = "fiGate.app is actively polling Messages and sending replies in single-app resident mode."
+        gatewayRuntimeStatusText = "Running in fiGate.app / 由 fiGate.app 運行"
+        gatewayRuntimeDetailText = "fiGate.app is actively polling Apple Messages, relaying requests to OpenClaw, and sending iMessage replies in single-app resident mode. / fiGate.app 正在單一常駐模式下輪詢 Apple Messages、轉發請求到 OpenClaw，並回送 iMessage。"
         lastError = nil
-        statusText = "Single-app resident mode"
-        detailText = "fiGate.app is the only gateway runtime. Closing the dashboard window does not stop polling."
+        statusText = "Single-App Resident Mode / 單一常駐模式"
+        detailText = "fiGate.app is the only gateway runtime. Closing the dashboard window does not stop iMessage polling. / fiGate.app 是唯一的 gateway runtime。關閉 dashboard 視窗不會停止 iMessage 輪詢。"
     }
 
     private func applyStoppedState(_ errorDescription: String) {
         gatewayRuntimeMode = .stopped
-        gatewayRuntimeStatusText = "Not Running"
+        gatewayRuntimeStatusText = "Not Running / 未運行"
         gatewayRuntimeDetailText = errorDescription
         lastError = errorDescription
-        statusText = "Single-app resident mode"
-        detailText = "fiGate.app could not start the resident gateway runner."
+        statusText = "Single-App Resident Mode / 單一常駐模式"
+        detailText = "fiGate.app could not start the resident gateway runner for iMessage and OpenClaw relay. / fiGate.app 無法啟動用於 iMessage 與 OpenClaw relay 的常駐 gateway runner。"
     }
 }

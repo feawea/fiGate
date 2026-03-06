@@ -1,29 +1,33 @@
-# fiGate 與 OpenClaw 配合說明
+# fiGate + OpenClaw Setup / fiGate 與 OpenClaw 配合說明
 
-版本：`Beta 0.1`
+Version / 版本: `Beta 0.1`
 
-## 1. 目標
+## 1. Purpose / 目標
 
-本文件說明如何讓 fiGate 將 iMessage 訊息轉發到 OpenClaw，並把回覆再送回 iMessage。
+This guide explains how to use fiGate as a macOS iMessage gateway for OpenClaw, Apple Messages automation, and Telegram Bot alternative workflows.
 
-## 2. 通訊方式
+本文件說明如何把 fiGate 用作 OpenClaw、Apple Messages automation，以及 Telegram Bot 替代工作流的 macOS iMessage gateway。
 
-fiGate 會將接收到的訊息透過 HTTP POST 送到 OpenClaw webhook。
+## 2. Relay Model / 通訊模型
 
-預設 endpoint：
+fiGate forwards approved iMessages to OpenClaw through an HTTP webhook.
+
+fiGate 會透過 HTTP webhook，把符合條件的 iMessage 轉發到 OpenClaw。
+
+Default endpoint / 預設端點：
 
 ```text
 http://127.0.0.1:18789/hooks/wake
 ```
 
-Header：
+Headers / Header：
 
 ```text
 Content-Type: application/json
 Authorization: Bearer <token>
 ```
 
-Payload：
+Payload / 請求內容：
 
 ```json
 {
@@ -33,9 +37,7 @@ Payload：
 }
 ```
 
-## 3. fiGate 設定
-
-在 `~/Library/Application Support/fiGate/config.json` 中設定：
+## 3. fiGate Config / fiGate 設定
 
 ```json
 {
@@ -50,60 +52,47 @@ Payload：
 }
 ```
 
-## 4. OpenClaw 端要求
+## 4. OpenClaw Requirements / OpenClaw 端要求
 
-- OpenClaw Gateway 必須在本機運行
-- Webhook endpoint 必須可被 fiGate 存取
-- token 必須與 fiGate 設定一致
+- OpenClaw Gateway must be running locally  
+  OpenClaw Gateway 必須在本機運行
+- The webhook endpoint must be reachable from fiGate  
+  webhook endpoint 必須可被 fiGate 存取
+- The token must match the one configured in fiGate  
+  token 必須與 fiGate 設定一致
 
-## 5. 典型流程
+## 5. Typical Flow / 典型流程
 
 ```text
 iPhone -> iMessage -> fiGate -> OpenClaw -> fiGate -> iMessage
 ```
 
-### 流程細節
+1. A user sends an iMessage from iPhone / 使用者從 iPhone 發送 iMessage
+2. fiGate detects the new message in Apple Messages `chat.db` / fiGate 在 Apple Messages `chat.db` 中偵測新訊息
+3. fiGate validates the sender against the allowlist / fiGate 依允許列表驗證來源
+4. fiGate sends `[fiGate]Recieved.(MM-DD HH:MM)` / fiGate 先回 `[fiGate]Recieved.(MM-DD HH:MM)`
+5. fiGate forwards the message to OpenClaw / fiGate 將訊息轉發到 OpenClaw
+6. OpenClaw returns a text reply / OpenClaw 回傳文字結果
+7. fiGate sends that reply back through iMessage / fiGate 再把回覆內容送回 iMessage
 
-1. 使用者從 iPhone 發送一條 iMessage
-2. fiGate 輪詢 `chat.db` 並偵測新訊息
-3. fiGate 驗證來源是否在允許列表中
-4. fiGate 先回一條 `[fiGate]Recieved.(MM-DD HH:MM)`
-5. fiGate 將訊息轉發到 OpenClaw
-6. OpenClaw 返回文字結果
-7. fiGate 將 OpenClaw 的文字回覆重新送回 iMessage
+## 6. Verification / 驗證方式
 
-## 6. 驗證方式
+1. Start OpenClaw / 啟動 OpenClaw
+2. Start fiGate / 啟動 fiGate
+3. Add your sender to `Sources` / 在 `Sources` 中加入測試來源
+4. Send a message that does not start with `[fiGate]` / 發送一條不以 `[fiGate]` 開頭的訊息
+5. Verify the acknowledgement and OpenClaw reply / 確認收到確認回覆與 OpenClaw 回覆
 
-1. 啟動 OpenClaw
-2. 啟動 fiGate
-3. 在 `Sources` 中加入你的測試來源
-4. 發送一條不以 `[fiGate]` 開頭的訊息
-5. 檢查：
-   - 是否收到 `[fiGate]Recieved.(MM-DD HH:MM)`
-   - `Logs` 中是否出現轉發紀錄
-   - OpenClaw 是否收到 webhook
+## 7. Common Issues / 常見問題
 
-## 7. 常見錯誤
+- Missing token / 缺少 token  
+  Add `openclaw_token` / 補上 `openclaw_token`
+- Endpoint unreachable / endpoint 無法連線  
+  Confirm OpenClaw is running at `127.0.0.1:18789` / 確認 OpenClaw 已在 `127.0.0.1:18789` 啟動
+- Ack arrives but no OpenClaw reply / 有確認回覆但沒有 OpenClaw 回覆  
+  Check OpenClaw health, token, and webhook response body / 檢查 OpenClaw 狀態、token 與 webhook 回傳內容
 
-### token 缺失
+## 8. Contact / 聯繫方式
 
-- 現象：Dashboard 顯示 `Needs external system token`
-- 處理：補上 `openclaw_token`
-
-### endpoint 無法連線
-
-- 現象：`error.log` 出現連線錯誤
-- 處理：確認 OpenClaw 是否已在 `127.0.0.1:18789` 啟動
-
-### 收到確認回覆但沒有外部回覆
-
-- 現象：只收到 `[fiGate]Recieved...`
-- 處理：
-  - 檢查 OpenClaw 是否正常運行
-  - 檢查 token 是否正確
-  - 檢查 webhook 回傳內容是否為文字
-
-## 8. 聯繫方式
-
-- 作者：`f`
-- 郵件：`feawea@gmail.com`
+- Author / 作者: `f`
+- Email / 郵件: `feawea@gmail.com`

@@ -4,7 +4,7 @@ public enum DatabaseAccessSubject: String, Codable, Sendable {
     case fiGateApp
 
     public var displayName: String {
-        "fiGate"
+        "fiGate / fiGate"
     }
 }
 
@@ -17,13 +17,13 @@ public enum DatabaseAccessStatus: String, Codable, Sendable {
     public var displayName: String {
         switch self {
         case .accessible:
-            return "Accessible"
+            return "Accessible / 可存取"
         case .accessDenied:
-            return "Access Denied"
+            return "Access Denied / 權限遭拒"
         case .databaseNotFound:
-            return "Database Missing"
+            return "Database Missing / 找不到資料庫"
         case .failed:
-            return "Check Failed"
+            return "Check Failed / 檢查失敗"
         }
     }
 }

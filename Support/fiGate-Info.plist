@@ -10,6 +10,8 @@
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleGetInfoString</key>
+    <string>fiGate / fiGate is a macOS iMessage gateway for OpenClaw, Apple Messages automation, and Telegram Bot alternative workflows. fiGate 是一個在 macOS 上以 iMessage 連接 OpenClaw、Apple Messages automation 與 Telegram Bot 替代工作流的訊息閘道。</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>

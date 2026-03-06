@@ -124,17 +124,17 @@ public final class ConfigManager: ObservableObject {
 
     public var gatewayStatusText: String {
         if config.openClawToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return "Needs external system token"
+            return "Needs OpenClaw or external system token / 缺少 OpenClaw 或外部系統 token"
         }
 
         if URL(string: config.openClawEndpoint) == nil {
-            return "Invalid external system endpoint"
+            return "Invalid OpenClaw or external system endpoint / OpenClaw 或外部系統端點無效"
         }
 
         if config.allowedSources.isEmpty {
-            return "No allowed sources configured"
+            return "No allowed iMessage sources configured / 尚未設定允許的 iMessage 來源"
         }
 
-        return "Ready"
+        return "Ready for iMessage, OpenClaw, and Telegram Bot alternative workflows / 已可用於 iMessage、OpenClaw 與 Telegram Bot 替代工作流"
     }
 }

@@ -1,30 +1,41 @@
 # fiGate
 
-Version: `Beta 0.1`
+Version / 版本: `Beta 0.1`
 
-## Download
+## Download / 下載
 
-直接下載：
+Direct downloads / 直接下載：
 
 - [Download DMG](https://github.com/feawea/fiGate/raw/main/dist/fiGate-Beta-0.1.dmg)
 - [Download ZIP](https://github.com/feawea/fiGate/raw/main/dist/fiGate-Beta-0.1.zip)
 
-檔案位置：
+Packaged files / 封裝檔案：
 
 - `dist/fiGate-Beta-0.1.dmg`
 - `dist/fiGate-Beta-0.1.zip`
 
-fiGate 是一個運行在 macOS 上的 iMessage Gateway。
+## Overview / 簡介
 
-它的責任很單純：從本地 Messages 資料庫讀取訊息、提取文字內容與來源資訊、轉發到外部系統，並在取得回覆後透過 iMessage 回送結果。
+fiGate is a macOS iMessage gateway for OpenClaw, Apple Messages automation, AI agent workflows, and Telegram Bot alternative setups. It reads incoming iMessages from the local Messages database, forwards approved messages to OpenClaw or other webhook-based systems, and sends the returned reply back through iMessage.
 
-fiGate 不是 AI 系統，也不在本機進行 AI 推理。它是訊息閘道，不是語義引擎。
+fiGate 是一個運行在 macOS 上的 iMessage gateway，適合用於 OpenClaw、Apple Messages automation、AI agent 工作流，以及 Telegram Bot 替代方案。它會從本地 Messages 資料庫讀取新訊息，將符合條件的 iMessage 轉發到 OpenClaw 或其他以 webhook 為基礎的系統，再把回覆結果透過 iMessage 送回原對話。
 
-對 OpenClaw 來說，fiGate 的價值在於把 `iMessage` 變成一個可直接使用的入口，替代常見的 `Telegram Bot` 方案。你不需要另外維護一個 Telegram 機器人，也不需要改變日常溝通習慣，而是直接用 iPhone 上原本就會使用的 iMessage，把訊息送進 OpenClaw，再把執行結果回傳到同一個對話裡。
+fiGate is not an AI model and does not perform reasoning locally. It is the transport layer between iMessage and OpenClaw.
 
-簡單說，fiGate 是「用 iMessage 來使用 OpenClaw」的橋樑。
+fiGate 不是 AI 系統，也不在本機進行推理。它的定位是連接 iMessage 與 OpenClaw 的訊息通道。
 
-## 核心流程
+## Why fiGate / 為什麼是 fiGate
+
+- Use iMessage as a natural Apple-native entry point for OpenClaw and AI automation.  
+  用 iMessage 作為更自然的 Apple 生態入口，連接 OpenClaw 與 AI automation。
+- Replace Telegram Bot workflows with Apple Messages when you want a simpler private control channel.  
+  當你想要更簡單、更私有的控制通道時，可用 Apple Messages 取代 Telegram Bot 工作流。
+- Keep commands, confirmations, and replies inside the same iMessage conversation.  
+  讓指令、確認訊息與回覆都留在同一個 iMessage 對話中。
+- Bridge iPhone, iMessage, macOS, OpenClaw, and webhook automation with minimal moving parts.  
+  以最少的中介層串起 iPhone、iMessage、macOS、OpenClaw 與 webhook automation。
+
+## Core Flow / 核心流程
 
 ```text
 iPhone
@@ -33,130 +44,109 @@ iMessage
   ↓
 fiGate
   ↓
-AI 或自動化系統
+OpenClaw / AI Agent / Webhook Automation
   ↓
 fiGate
   ↓
 iMessage
 ```
 
-## 核心定位
+## Positioning / 核心定位
 
-- fiGate 負責訊息讀取、提取、過濾、轉發、回傳
-- AI Agent、Webhook、OpenClaw 或自動化腳本負責決策與執行
-- fiGate 本身不做 AI reasoning
-- 它特別適合用來替代 Telegram，讓 OpenClaw 直接接入 iMessage 工作流
+- fiGate handles message ingestion, extraction, filtering, forwarding, and reply delivery.  
+  fiGate 負責訊息讀取、提取、過濾、轉發與回傳。
+- OpenClaw, AI agents, webhooks, or automation scripts handle execution and decision-making.  
+  OpenClaw、AI agents、webhook 或自動化腳本負責執行與決策。
+- fiGate is intentionally designed as an iMessage-first alternative to a Telegram Bot command channel.  
+  fiGate 刻意被設計成以 iMessage 為核心、可替代 Telegram Bot 指令通道的方案。
 
-## 為什麼用 iMessage 取代 Telegram
+## Core Features / 核心功能
 
-- 不需要額外建立或維護 Telegram Bot
-- 對 Apple 使用者來說，iMessage 是更自然、更低摩擦的入口
-- 指令、回覆、確認訊息都留在既有的 Messages 對話中
-- 當 OpenClaw 需要一個簡單可靠的遠端入口時，iMessage 比額外引入聊天平台更直接
-- 對個人自動化場景來說，fiGate 的目標就是「用 iMessage 來驅動 OpenClaw」
+### 1. iMessage Listener / iMessage 訊息監聽
 
-## 核心功能
+fiGate polls the local Apple Messages database:
 
-### 1. iMessage 訊息監聽
-
-fiGate 會定期掃描：
+fiGate 會定期輪詢本地 Apple Messages 資料庫：
 
 ```text
 ~/Library/Messages/chat.db
 ```
 
-並提取：
+It extracts message text, sender, timestamps, and message direction.
 
-- 訊息文字
-- 發送者
-- 訊息時間
-- 是否為自己送出的訊息
+它會提取訊息文字、發送者、時間戳，以及訊息方向。
 
-### 2. 訊息來源過濾
+### 2. Source Filtering / 訊息來源過濾
 
-只有允許列表中的來源會被處理。支援：
+Only approved phone numbers, Apple IDs, or email addresses can trigger the gateway.
 
-- 手機號碼
-- Apple ID / Email
+只有允許列表中的電話號碼、Apple ID 或電子郵件地址才可以觸發 gateway。
 
-### 3. 訊息轉發
+### 3. Message Forwarding / 訊息轉發
 
-新訊息會被轉發給外部系統。外部系統可以是：
+Approved messages are forwarded to OpenClaw or another external webhook-based system.
 
-- OpenClaw
-- AI Agent Gateway
-- 一般 Webhook
-- 本地自動化程式
+符合條件的訊息會被轉發到 OpenClaw 或其他外部 webhook 系統。
 
-目前專案內建的預設 adapter 是 OpenClaw webhook client，但 `GatewayRunner` 已改為依賴通用的 external relay 介面，因此可以擴充成其他外部系統。
+### 4. Automatic iMessage Reply / 自動回覆 iMessage
 
-### 4. 自動回覆 iMessage
+fiGate sends reply text back through Apple Messages using AppleScript.
 
-當外部系統回傳文字結果後，fiGate 會透過 `Messages` 應用程式與 AppleScript 自動發送回覆。
+fiGate 會透過 AppleScript 與 Apple Messages 將回覆文字送回 iMessage。
 
-## Input / Output
+## Input / Output / 輸入輸出
 
-### Input
+### Input / 輸入
 
-- iMessage 文字訊息
-- 使用者設定
-  - allowed sources
-  - polling interval
-  - external system endpoint
-  - access token
+- iMessage text messages / iMessage 文字訊息
+- Allowed source configuration / 允許來源設定
+- Polling interval / 輪詢間隔
+- OpenClaw endpoint and token / OpenClaw 端點與 token
 
-### Output
+### Output / 輸出
 
-- 結構化訊息事件
-- 外部系統轉發請求
-- iMessage 自動回覆
+- Structured message events / 結構化訊息事件
+- OpenClaw or webhook relay requests / OpenClaw 或 webhook 轉發請求
+- iMessage replies / iMessage 回覆
 
-## 專案結構
+## Project Structure / 專案結構
 
-### Shared Core
+### fiGateCore
 
-- `fiGateCore`
-  - `MessageListener`
-  - `SourceFilter`
-  - `PollingEngine`
-  - `GatewayRunner`
-  - `OpenClawClient`
-  - `MessageSender`
-  - `ConfigManager`
-  - `Logger`
+- `MessageListener`
+- `SourceFilter`
+- `PollingEngine`
+- `GatewayRunner`
+- `OpenClawClient`
+- `MessageSender`
+- `ConfigManager`
+- `Logger`
 
-### Native macOS App Structure
+### fiGate.app
 
-- `fiGate.app`
-  - 單一常駐式 SwiftUI app
-  - 啟動後直接在 app 內執行 gateway polling / reply runtime
-  - 關閉 dashboard 視窗後仍可透過選單列保持常駐
-- `fiGateCore`
-  - 共用核心邏輯仍保留在本地 Swift package
+- Single-app resident SwiftUI macOS app / 單一常駐式 SwiftUI macOS app
+- Polls iMessage and sends replies inside the same app process / 在同一個 app 程序內輪詢 iMessage 並發送回覆
+- Keeps running from the menu bar even after the main window closes / 主視窗關閉後仍可從選單列保持常駐
 
-## Xcode 使用方式
+## Xcode / Xcode 使用方式
 
-請打開：
+Open / 請打開：
 
 - `fiGate.xcodeproj`
 
-不要只打開 package root，否則你拿到的是 Swift Package 視圖，而不是完整的 macOS app 專案結構。
+Do not open only the package root if you want the full macOS app project.
 
-使用方式：
+如果你要的是完整 macOS app 專案，請不要只打開 package root。
 
-1. 選擇 `fiGate` scheme
-2. Destination 選 `My Mac`
-3. Run
+## Runtime Config / 執行期設定
 
-## 設定檔
-
-執行期設定位置：
+Config path / 設定檔位置：
 
 ```text
 ~/Library/Application Support/fiGate/config.json
 ```
 
-範例設定：
+Sample config / 範例設定：
 
 ```json
 {
@@ -171,88 +161,59 @@ fiGate 會定期掃描：
 }
 ```
 
-雖然欄位名稱目前沿用 `openclaw_*`，但其角色已經被整理為「外部系統 webhook 設定」。
+## Permissions / 權限要求
 
-## 權限要求
+- Full Disk Access  
+  Required to read `~/Library/Messages/chat.db`  
+  需要用來讀取 `~/Library/Messages/chat.db`
+- Automation  
+  Required to control Apple Messages for sending replies  
+  需要用來控制 Apple Messages 發送回覆
 
-fiGate 需要以下 macOS 權限：
+## Build / Build 與打包
 
-- Full Disk Access
-  - 讀取 `~/Library/Messages/chat.db`
-- Automation
-  - 控制 `Messages` 以發送回覆
-
-## 目前已完成
-
-- SQLite 讀取 iMessage 資料庫
-- 輪詢式新訊息偵測
-- 來源 allowlist 過濾
-- 外部系統 webhook 轉發
-- iMessage 自動回覆
-- 日誌檔寫入
-- SwiftUI 設定介面
-- 原生 Xcode 單 app 常駐結構
-
-## Build / Generate
-
-Swift package build：
+Swift package build:
 
 ```bash
 swift build
 ```
 
-生成 Xcode project：
+Generate the Xcode project:
 
 ```bash
 ./scripts/generate-xcodeproj.sh
 ```
 
-用 Xcode project build：
+Build with Xcode project:
 
 ```bash
 xcodebuild -project fiGate.xcodeproj -scheme fiGate -destination 'platform=macOS' build
 ```
 
-本機安裝到 `/Applications` 以便穩定測試權限：
+Install locally to `/Applications`:
 
 ```bash
 ./scripts/install-local.sh
 ```
 
-如果安裝腳本最後顯示 `Signature: adhoc`，表示目前 Xcode 還沒有使用有效的 Apple Development 簽名。這種 build 常會被 macOS 隱私設定頁拒絕，出現 `Failed to create archivableRepresentation`，需要先在 Xcode 更新開發憑證並為 `fiGate` 指定 Development Team。
-
-生成本機 zip / dmg：
+Create local DMG and ZIP:
 
 ```bash
 ./scripts/package-local.sh
 ```
 
-預設會輸出：
-
-- `dist/fiGate-Beta-0.1.zip`
-- `dist/fiGate-Beta-0.1.dmg`
-
-## 文件
+## Documentation / 文件
 
 - `docs/USER_GUIDE.md`
 - `docs/OPENCLAW_SETUP.md`
 
-## 作者
+## Author / 作者
 
-- 姓名：`f`
-- 郵件：`feawea@gmail.com`
+- Name / 姓名: `f`
+- Email / 郵件: `feawea@gmail.com`
 
-## 專案總結
+## Summary / 總結
 
-fiGate 的定位是「訊息閘道」。
+fiGate turns iMessage into a practical OpenClaw control channel on macOS. If Telegram Bot is a common remote automation entry point, fiGate is the Apple-native alternative: use iMessage instead of Telegram, connect it to OpenClaw, and keep the full loop inside Apple Messages.
 
-它讓 iPhone 可以作為一個遠端入口，透過 iMessage 將指令或文字送入 Mac 上的 AI / 自動化系統，再把結果回傳到原本的 iMessage 對話中。
-
-如果把 Telegram Bot 看成一種常見的 AI / automation 入口，那 fiGate 的目標就是提供一個更貼近 Apple 生態的替代方案：不用 Telegram，而是直接用 iMessage 來接 OpenClaw。
-
-簡單說：
-
-- iPhone 是入口
-- fiGate 是通道
-- OpenClaw 或其他外部系統負責處理
-- iMessage 是回傳介面
+fiGate 讓 iMessage 成為一個實用的 OpenClaw 控制通道。如果說 Telegram Bot 是一種常見的遠端自動化入口，那 fiGate 就是更貼近 Apple 生態的替代方案：不用 Telegram，而是直接用 iMessage 連接 OpenClaw，並把整個來回流程保留在 Apple Messages 裡。
