@@ -1,0 +1,8 @@
+.build
+.swiftpm
+DerivedData
+.derived
+xcuserdata/
+*.xcuserstate
+dist/fiGate.app
+dist/fiGate-macOS-local.zip

@@ -1,0 +1,10 @@
+{
+  "poll_interval": 15,
+  "chat_db": "~/Library/Messages/chat.db",
+  "openclaw_endpoint": "http://127.0.0.1:18789/hooks/wake",
+  "openclaw_token": "replace-with-openclaw-token",
+  "allowed_sources": [
+    "+15551234567",
+    "tester@example.com"
+  ]
+}
