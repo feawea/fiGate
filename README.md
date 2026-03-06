@@ -2,6 +2,18 @@
 
 Version: `Beta 0.1`
 
+## Download
+
+直接下載：
+
+- [Download DMG](https://github.com/feawea/fiGate/raw/main/dist/fiGate-Beta-0.1.dmg)
+- [Download ZIP](https://github.com/feawea/fiGate/raw/main/dist/fiGate-Beta-0.1.zip)
+
+檔案位置：
+
+- `dist/fiGate-Beta-0.1.dmg`
+- `dist/fiGate-Beta-0.1.zip`
+
 fiGate 是一個運行在 macOS 上的 iMessage Gateway。
 
 它的責任很單純：從本地 Messages 資料庫讀取訊息、提取文字內容與來源資訊、轉發到外部系統，並在取得回覆後透過 iMessage 回送結果。
