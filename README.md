@@ -20,6 +20,10 @@ fiGate 是一個運行在 macOS 上的 iMessage Gateway。
 
 fiGate 不是 AI 系統，也不在本機進行 AI 推理。它是訊息閘道，不是語義引擎。
 
+對 OpenClaw 來說，fiGate 的價值在於把 `iMessage` 變成一個可直接使用的入口，替代常見的 `Telegram Bot` 方案。你不需要另外維護一個 Telegram 機器人，也不需要改變日常溝通習慣，而是直接用 iPhone 上原本就會使用的 iMessage，把訊息送進 OpenClaw，再把執行結果回傳到同一個對話裡。
+
+簡單說，fiGate 是「用 iMessage 來使用 OpenClaw」的橋樑。
+
 ## 核心流程
 
 ```text
@@ -41,6 +45,15 @@ iMessage
 - fiGate 負責訊息讀取、提取、過濾、轉發、回傳
 - AI Agent、Webhook、OpenClaw 或自動化腳本負責決策與執行
 - fiGate 本身不做 AI reasoning
+- 它特別適合用來替代 Telegram，讓 OpenClaw 直接接入 iMessage 工作流
+
+## 為什麼用 iMessage 取代 Telegram
+
+- 不需要額外建立或維護 Telegram Bot
+- 對 Apple 使用者來說，iMessage 是更自然、更低摩擦的入口
+- 指令、回覆、確認訊息都留在既有的 Messages 對話中
+- 當 OpenClaw 需要一個簡單可靠的遠端入口時，iMessage 比額外引入聊天平台更直接
+- 對個人自動化場景來說，fiGate 的目標就是「用 iMessage 來驅動 OpenClaw」
 
 ## 核心功能
 
@@ -235,9 +248,11 @@ fiGate 的定位是「訊息閘道」。
 
 它讓 iPhone 可以作為一個遠端入口，透過 iMessage 將指令或文字送入 Mac 上的 AI / 自動化系統，再把結果回傳到原本的 iMessage 對話中。
 
+如果把 Telegram Bot 看成一種常見的 AI / automation 入口，那 fiGate 的目標就是提供一個更貼近 Apple 生態的替代方案：不用 Telegram，而是直接用 iMessage 來接 OpenClaw。
+
 簡單說：
 
 - iPhone 是入口
 - fiGate 是通道
-- 外部系統負責處理
+- OpenClaw 或其他外部系統負責處理
 - iMessage 是回傳介面
